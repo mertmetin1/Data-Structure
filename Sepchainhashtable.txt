@@ -1,0 +1,156 @@
+public class SepChainHashtable {
+	int[] arr;
+	int hashsize;
+	int currentsize = 0;
+	int key;
+	hashnode root;
+
+	public SepChainHashtable(int size) {
+		this.hashsize = nextPrime(size);
+		arr = new int[this.hashsize];
+	}
+
+	public void GetValueByKey(int value) {
+		System.out.println();
+		System.out.print(arr[value % hashsize] + "\t");
+		if (value % hashsize == root.hashnodeHash % hashsize) {
+			hashnode last = root;
+			while (last != null) {
+				System.out.print("  " + last.data + "   ");
+				last = last.next;
+			}
+		}
+
+	}
+
+	private static int nextPrime(int n) {
+		if (n % 2 == 0)
+			n++;
+		for (; !isPrime(n); n += 2)
+			;
+
+		return n;
+	}
+
+	private static boolean isPrime(int n) {
+		if (n == 2 || n == 3)
+			return true;
+		if (n == 1 || n % 2 == 0)
+			return false;
+		for (int i = 3; i * i <= n; i += 2)
+			if (n % i == 0)
+				return false;
+		return true;
+	}
+
+	public boolean isFull() {
+		return currentsize == arr.length;
+	}
+
+	public boolean isEmpty() {
+		return currentsize == 0;
+	}
+
+	public void clear() {
+		arr = new int[hashsize];
+	}
+
+	public void displayTable() {
+		System.out.println("currentsize=" + currentsize);
+		for (int i : arr) {
+			if (i % hashsize != 0) {
+
+				System.out.print("\nKey = " + i % hashsize + "\t\t Value= " + i);
+				if (i % hashsize == root.hashnodeHash % hashsize) {
+					hashnode last = root;
+					while (last != null) {
+						System.out.print("  " + last.data + "   ");
+						last = last.next;
+					}
+				}
+
+			}
+		}
+	}
+
+	public void insert(int value) {
+		currentsize++;
+		key = value % hashsize;
+		if (arr[key] == 0) {
+
+			arr[value % hashsize] = value;
+		} else {
+			if (root == null) {
+				root = new hashnode(arr[key], value);
+			} else {
+
+				while (root.next != null) {
+					root = root.next;
+				}
+				root.next = new hashnode(arr[key], value);
+			}
+
+		}
+	}
+
+	public boolean contains(int value) {
+		key = value % hashsize;
+		return arr[key] == value;
+	}
+
+	public boolean delete(int value) {
+		currentsize--;
+		key = value % hashsize;
+		if (value % hashsize == root.hashnodeHash % hashsize) {
+
+			hashnode last = root;
+			while (last != null) {
+				if (value == last.data) {
+					last.data = 0;
+				}
+				last = last.next;
+			}
+		}
+
+		if (arr[key] == value) {
+
+			if (root == null) {
+				arr[key] = 0;
+			} else {
+				arr[key] = root.data;
+				while (root.next != null) {
+					int temp = root.next.next.data;
+					root.next.data = temp;
+					root = root.next;
+				}
+				root.data = 0;
+
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public static void main(String[] args) {
+
+		SepChainHashtable table = new SepChainHashtable(100);
+	System.out.println(	table.isEmpty());
+		table.insert(1456);
+		table.insert(2345);
+		table.insert(657);
+		table.insert(1345);
+		table.insert(143);
+		table.insert(12);
+		table.insert(5);
+		System.out.println(	table.isEmpty());
+		table.insert(1235);
+		table.insert(36);
+		//table.delete(1456);
+		table.insert(244);
+		
+		System.out.println(	table.isFull());
+		table.displayTable();
+		
+
+	}
+}
